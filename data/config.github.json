@@ -1,50 +1,44 @@
 {
   "version": "1.0",
-  "ai": {
-    "provider": "deepseek",
-    "model": "deepseek-v4-flash",
-    "base_url": "https://api.deepseek.com",
-    "api_key_env": "DEEPSEEK_API_KEY",
-    "temperature": 0.3,
-    "max_tokens": 8192,
-    "throttle_sec": 1,
-    "languages": [
-      "zh",
-      "en"
-    ],
-    "analysis_concurrency": 5,
-    "enrichment_concurrency": 5
+"ai": {
+  "provider": "gemini",
+  "model": "gemini-3.1-flash-lite",
+  "api_key_env": "GOOGLE_API_KEY",
+  "temperature": 0.3,
+  "max_tokens": 4096,
+  "throttle_sec": 4.5,
+  "analysis_concurrency": 1,
+  "enrichment_concurrency": 1
+},
+  "email": {
+    "enabled": false,
+    "smtp_server": "smtp.qq.com",
+    "smtp_port": 465,
+    "imap_server": "imap.qq.com",
+    "imap_port": 993,
+    "email_address": "xxx@qq.com",
+    "sender_name": "Horizon Daily",
+    "subscribe_keyword": "SUBSCRIBE",
+    "unsubscribe_keyword": "UNSUBSCRIBE"
   },
   "sources": {
     "github": [
       {
         "type": "user_events",
-        "username": "karpathy",
+        "username": "torvalds",
         "enabled": true
       },
       {
         "type": "repo_releases",
-        "owner": "vllm-project",
-        "repo": "vllm",
-        "enabled": true
-      },
-      {
-        "type": "repo_releases",
-        "owner": "sgl-project",
-        "repo": "sglang",
-        "enabled": true
-      },
-      {
-        "type": "repo_releases",
-        "owner": "triton-lang",
-        "repo": "triton",
+        "owner": "astral-sh",
+        "repo": "uv",
         "enabled": true
       }
     ],
     "hackernews": {
       "enabled": true,
-      "fetch_top_stories": 30,
-      "min_score": 150
+      "fetch_top_stories": 20,
+      "min_score": 100
     },
     "rss": [
       {
@@ -54,22 +48,10 @@
         "category": "ai-tools"
       },
       {
-        "name": "GitHub Trending - Daily",
-        "url": "https://mshibanami.github.io/GitHubTrendingRSS/daily/all.xml",
-        "enabled": true,
-        "category": "github-trending"
-      },
-      {
-        "name": "Semianalysis",
-        "url": "https://newsletter.semianalysis.com/feed",
-        "enabled": true,
-        "category": "semiconductors"
-      },
-      {
-        "name": "LWN.net",
+        "name": "LWN.net (subscriber full-text)",
         "url": "https://lwn.net/headlines/full_text?key=${LWN_KEY}",
-        "enabled": true,
-        "category": "linux-kernel"
+        "enabled": false,
+        "category": "linux"
       }
     ],
     "reddit": {
@@ -80,47 +62,89 @@
           "enabled": true,
           "sort": "hot",
           "time_filter": "day",
-          "fetch_limit": 10,
-          "min_score": 60
-        },
-        {
-          "subreddit": "LocalLLaMA",
-          "enabled": true,
-          "sort": "hot",
-          "time_filter": "day",
-          "fetch_limit": 10,
-          "min_score": 60
+          "fetch_limit": 15,
+          "min_score": 50
         }
       ],
-      "users": [],
-      "fetch_comments": 10
-    },
-    "telegram": {
-      "enabled": true,
-      "channels": [
+      "users": [
         {
-          "channel": "zaihuapd",
+          "username": "iamthatis",
           "enabled": true,
-          "fetch_limit": 20
+          "sort": "new",
+          "fetch_limit": 10
+        }
+      ],
+      "fetch_comments": 5
+    },
+    "twitter": {
+      "enabled": false,
+      "users": ["karpathy", "ylecun"],
+      "fetch_limit": 10,
+      "fetch_reply_text": false,
+      "max_replies_per_tweet": 3,
+      "max_tweets_to_expand": 10,
+      "reply_min_likes": 5
+    },
+    "openbb": {
+      "enabled": false,
+      "fetch_filings": false,
+      "filings_provider": "sec",
+      "watchlists": [
+        {
+          "name": "megacaps",
+          "enabled": true,
+          "provider": "yfinance",
+          "fetch_limit": 20,
+          "category": "equities",
+          "symbols": ["AAPL", "MSFT", "NVDA", "GOOGL", "AMZN", "META", "TSLA"]
         }
       ]
+    },
+    "ossinsight": {
+      "enabled": false,
+      "period": "past_24_hours",
+      "languages": ["All", "Python", "TypeScript"],
+      "keywords": [],
+      "min_stars": 10,
+      "max_items": 30
+    },
+    "gdelt": {
+      "enabled": false,
+      "query": "artificial intelligence",
+      "mode": "ArtList",
+      "max_records": 75,
+      "timespan": null,
+      "language": null,
+      "country": null,
+      "category": "news"
+    },
+    "google_news": {
+      "enabled": false,
+      "query": "artificial intelligence",
+      "language": "en",
+      "country": "US",
+      "ceid": null,
+      "max_results": 100,
+      "category": "news"
     }
   },
   "filtering": {
-    "ai_score_threshold": 8.0,
-    "time_window_hours": 24
+    "ai_score_threshold": 6.0,
+    "time_window_hours": 24,
+    "max_items": null,
+    "category_groups": {},
+    "default_group": "other",
+    "default_group_limit": null
   },
   "webhook": {
-    "enabled": true,
+    "enabled": false,
     "url_env": "HORIZON_WEBHOOK_URL",
-    "delivery": "summary_and_items",
-    "overview_position": "last",
-    "platform": "feishu",
-    "layout": "collapsible",
+    "delivery": "summary",
+    "overview_position": "first",
+    "platform": "generic",
+    "layout": "markdown",
     "fallback_layout": "markdown",
-    "languages": [
-      "zh"
-    ],
+    "languages": null,
     "request_body": {
       "msg_type": "interactive",
       "card": {
@@ -137,6 +161,13 @@
         },
         "body": {
           "elements": [
+            {
+              "tag": "markdown",
+              "content": "Horizon生成结果: #{result}\nHorizon日报重要资讯数量: #{important_items}/#{all_items}"
+            },
+            {
+              "tag": "hr"
+            },
             {
               "tag": "markdown",
               "content": "#{summary}"
